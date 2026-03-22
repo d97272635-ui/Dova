@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>David's Art</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+body { font-family: 'Inter', sans-serif; }
+#cart { transition: transform 0.3s ease; transform: translateX(100%); }
+#cart.open { transform: translateX(0); }
+</style>
+</head>
+<body class="bg-black text-white">
+
+<header class="flex justify-between items-center p-4">
+<div class="font-bold">DA</div>
+<div class="flex gap-4 items-center">
+<button onclick="toggleSearch()">🔍</button>
+<button onclick="toggleCart()">🛒</button>
+</div>
+</header>
+
+<div id="searchBox" class="hidden px-4 pb-4">
+<input id="search" placeholder="Search art..." class="w-full text-black px-3 py-2 rounded" onkeyup="searchArt()">
+</div>
+
+<section class="text-center py-20">
+<p class="text-gray-400 tracking-widest">HYPERREALISM ARTIST · SLIGO, IRELAND</p>
+<h1 class="text-5xl font-extrabold mt-4">David's Art</h1>
+<p class="text-gray-400 mt-4">Self-taught artist creating lifelike drawings since age 5</p>
+<div class="mt-6 flex justify-center gap-4">
+<a href="#gallery" class="bg-white text-black px-6 py-2">View Gallery</a>
+<a href="#commissions" class="border px-6 py-2">Order a Commission</a>
+</div>
+</section>
+
+<section id="commissions" class="p-6 text-center">
+<h2 class="text-4xl font-bold mb-10">Commission a Custom Artwork</h2>
+<div class="space-y-6">
+
+<div class="border p-6">
+<p>Small</p>
+<h3 class="text-3xl font-bold">A5</h3>
+<p>€30</p>
+<button onclick="addToCart('A5 Commission',30)" class="mt-4 bg-white text-black px-4 py-2">Add to Basket</button>
+</div>
+
+<div class="border p-6">
+<p>Medium</p>
+<h3 class="text-3xl font-bold">A4</h3>
+<p>€40</p>
+<button onclick="addToCart('A4 Commission',40)" class="mt-4 bg-white text-black px-4 py-2">Add to Basket</button>
+</div>
+
+<div class="border p-6">
+<p>Large</p>
+<h3 class="text-3xl font-bold">A3</h3>
+<p>€50</p>
+<button onclick="addToCart('A3 Commission',50)" class="mt-4 bg-white text-black px-4 py-2">Add to Basket</button>
+</div>
+
+</div>
+</section>
+
+<section id="gallery" class="p-6">
+<h2 class="text-3xl font-bold text-center mb-6">Artwork</h2>
+<div class="grid grid-cols-1 gap-6">
+<div class="art-item" onclick="openModal(this)">
+<img src="https://image2url.com/r2/default/images/1774025183071-c8a2549d-6fde-42b4-b4a9-b94e19e1dcf4.jpg">
+<p>Max Verstappen</p>
+<p>€50</p>
+<button onclick="event.stopPropagation(); addToCart('Artwork',50)" class="bg-white text-black px-3 py-1">Add to Basket</button>
+</div>
+</div>
+</section>
+
+<section class="text-center p-10">
+<h2 class="text-4xl font-bold">Follow My Journey</h2>
+<div class="flex justify-center gap-4 mt-6">
+<a href="https://youtube.com/@david-b2e6n?si=FddAfYJ9d_d9l_g5" class="border px-6 py-2">YouTube</a>
+<a href="https://www.instagram.com/david.art15" class="border px-6 py-2">Instagram</a>
+</div>
+</section>
+
+<section class="p-6 max-w-xl mx-auto">
+<h2 class="text-3xl font-bold text-center mb-4">Get in Touch</h2>
+<form action="https://formsubmit.co/d97272635@gmail.com" method="POST" class="flex flex-col gap-3">
+<input type="text" name="name" placeholder="Name" required class="p-2 text-black">
+<input type="email" name="email" placeholder="Email" required class="p-2 text-black">
+<textarea name="message" placeholder="Message" required class="p-2 text-black"></textarea>
+<input type="hidden" name="_captcha" value="false">
+<button class="bg-white text-black py-2">Send</button>
+</form>
+</section>
+
+<div id="cart" class="fixed right-0 top-0 w-64 h-full bg-white text-black p-4 shadow-2xl">
+<h2 class="font-bold text-lg">Basket</h2>
+<div id="cart-items" class="mt-2"></div>
+<p class="mt-4">Tax €5</p>
+<p>Shipping €5</p>
+<p id="total" class="font-bold mt-2"></p>
+<a id="checkoutBtn" href="#" class="block bg-black text-white text-center mt-4 py-2">Checkout</a>
+</div>
+
+<div id="modal" class="hidden fixed inset-0 bg-black flex items-center justify-center" onclick="closeModal()">
+<img id="modal-img" class="max-w-full max-h-full">
+</div>
+
+<script>
+let total = 0;
+let items = [];
+
+function addToCart(name, price){
+items.push({name,price});
+total += price;
+renderCart();
+}
+
+function renderCart(){
+let c = document.getElementById('cart-items');
+c.innerHTML = '';
+items.forEach(i => c.innerHTML += `<p>${i.name} €${i.price}</p>`);
+let final = total + 10;
+document.getElementById('total').innerText = "Total €" + final;
+// update revolut link with amount
+let link = "https://revolut.me/davide44k/" + final;
+document.getElementById('checkoutBtn').href = link;
+}
+
+function toggleCart(){
+document.getElementById('cart').classList.toggle('open');
+}
+
+function toggleSearch(){
+document.getElementById('searchBox').classList.toggle('hidden');
+}
+
+function openModal(el){
+document.getElementById('modal').classList.remove('hidden');
+document.getElementById('modal-img').src = el.querySelector('img').src;
+}
+
+function closeModal(){
+document.getElementById('modal').classList.add('hidden');
+}
+
+function searchArt(){
+let val = document.getElementById('search').value.toLowerCase();
+let items = document.getElementsByClassName('art-item');
+for(let i=0;i<items.length;i++){
+items[i].style.display = items[i].innerText.toLowerCase().includes(val)?'':'none';
+}
+}
+</script>
+
+</body>
+</html>
